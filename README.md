@@ -23,7 +23,7 @@ Un nouveau mot est **tiré au hasard** parmi plus de 500 mots possibles à chaqu
 
 ## Fonctionnalités
 
-- Plus de 500 mots français (5 lettres, sans accents) tirés au sort à chaque partie.
+- 929 mots français (5 lettres, sans accents) tirés au sort à chaque partie.
 - Clavier virtuel AZERTY avec retour visuel des lettres essayées.
 - Statistiques persistantes (parties jouées, % de victoires, séries) via `localStorage`.
 - Mode difficile optionnel (réutiliser les indices révélés).
