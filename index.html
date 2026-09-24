@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LE MOT — Jeu de mots quotidien</title>
+<meta name="description" content="Un clone autonome du jeu Wordle en français. Devinez le mot de 5 lettres en 6 essais. Plus de 500 mots possibles, tirés au hasard à chaque partie.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <button class="icon-btn" id="btn-restart" title="Nouvelle partie" aria-label="Nouvelle partie">
+      <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+    </button>
+    <button class="icon-btn" id="btn-stats" title="Statistiques" aria-label="Statistiques">
+      <svg viewBox="0 0 24 24"><path d="M4 20h3v-8H4v8zm6.5 0h3V4h-3v16zm6.5 0h3v-12h-3v12z"/></svg>
+    </button>
+
+    <div class="logo" id="logo" aria-label="LE MOT">
+      <span class="logo-tile logo-correct">L</span>
+      <span class="logo-tile">E</span>
+      <span class="logo-tile logo-present">M</span>
+      <span class="logo-tile">O</span>
+      <span class="logo-tile">T</span>
+    </div>
+
+    <button class="icon-btn" id="btn-help" title="Comment jouer" aria-label="Comment jouer">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17h-2v-2h2zm2.07-7.75-.9.92A3.11 3.11 0 0 0 13 14.5h-2v-.5c0-.83.34-1.58.88-2.13l1.24-1.26A1.75 1.75 0 1 0 10 9.5H8a4 4 0 1 1 7.07 2.75z"/></svg>
+    </button>
+    <button class="icon-btn" id="btn-settings" title="Réglages" aria-label="Réglages">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.14 7.14 0 0 0 .06-.94 7.14 7.14 0 0 0-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54a7.3 7.3 0 0 0-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.65 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.14 7.14 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.4 1.05.72 1.63.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54a7.3 7.3 0 0 0 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>
+    </button>
+  </header>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <main class="board-wrap">
+    <div id="board" class="board"></div>
+  </main>
+
+  <footer class="keyboard" id="keyboard" aria-label="Clavier virtuel"></footer>
+
+</div>
+
+<!-- Modal: comment jouer -->
+<div class="modal-overlay" id="modal-help">
+  <div class="modal">
+    <button class="modal-close" data-close>&times;</button>
+    <h2>Comment jouer</h2>
+    <p>Devinez le <strong>MOT</strong> en 6 essais.</p>
+    <p>Chaque essai doit être un mot valide de 5 lettres. Validez avec la touche Entrée.</p>
+    <p>Après chaque essai, la couleur des lettres change pour indiquer si vous vous rapprochez de la solution.</p>
+    <div class="example">
+      <div class="example-row">
+        <div class="tile filled correct">P</div>
+        <div class="tile filled">O</div>
+        <div class="tile filled">U</div>
+        <div class="tile filled">L</div>
+        <div class="tile filled">E</div>
+      </div>
+      <p>La lettre <strong>P</strong> est dans le mot et à la bonne position.</p>
+    </div>
+    <div class="example">
+      <div class="example-row">
+        <div class="tile filled">C</div>
+        <div class="tile filled present">R</div>
+        <div class="tile filled">O</div>
+        <div class="tile filled">I</div>
+        <div class="tile filled">X</div>
+      </div>
+      <p>La lettre <strong>R</strong> est dans le mot mais à une mauvaise position.</p>
+    </div>
+    <div class="example">
+      <div class="example-row">
+        <div class="tile filled">B</div>
+        <div class="tile filled">A</div>
+        <div class="tile filled">T</div>
+        <div class="tile filled">O</div>
+        <div class="tile filled absent">N</div>
+      </div>
+      <p>La lettre <strong>N</strong> n'est pas dans le mot.</p>
+    </div>
+    <p class="muted">Plus de 500 mots différents peuvent être tirés au sort : un nouveau mot est choisi au hasard à chaque nouvelle partie !</p>
+  </div>
+</div>
+
+<!-- Modal: statistiques -->
+<div class="modal-overlay" id="modal-stats">
+  <div class="modal">
+    <button class="modal-close" data-close>&times;</button>
+    <h2>Statistiques</h2>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-value" id="stat-played">0</div><div class="stat-label">Parties jouées</div></div>
+      <div class="stat"><div class="stat-value" id="stat-winpct">0</div><div class="stat-label">% de victoires</div></div>
+      <div class="stat"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Série en cours</div></div>
+      <div class="stat"><div class="stat-value" id="stat-maxstreak">0</div><div class="stat-label">Meilleure série</div></div>
+    </div>
+    <h3>Répartition des essais</h3>
+    <div class="dist" id="dist"></div>
+    <button class="btn btn-primary" id="btn-new-game">Nouvelle partie</button>
+    <button class="btn btn-ghost" id="btn-reset-stats">Réinitialiser les statistiques</button>
+  </div>
+</div>
+
+<!-- Modal: réglages -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <button class="modal-close" data-close>&times;</button>
+    <h2>Réglages</h2>
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">Thème sombre</div>
+        <div class="setting-desc">Basculer entre thème clair et sombre</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-theme" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">Mode difficile</div>
+        <div class="setting-desc">Les indices révélés doivent être réutilisés</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-hardmode">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">Daltonisme</div>
+        <div class="setting-desc">Palette de couleurs plus contrastée</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-colorblind">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="muted small" id="word-count-label"></p>
+  </div>
+</div>
+
+<!-- Modal: fin de partie -->
+<div class="modal-overlay" id="modal-end">
+  <div class="modal">
+    <button class="modal-close" data-close>&times;</button>
+    <h2 id="end-title">Bravo !</h2>
+    <p id="end-message"></p>
+    <div class="end-word" id="end-word"></div>
+    <button class="btn btn-primary" id="btn-play-again">Rejouer</button>
+    <button class="btn btn-ghost" id="btn-share">Copier le résultat</button>
+  </div>
+</div>
+
+<script src="words.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
